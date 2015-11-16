@@ -7,17 +7,12 @@ BUGS/FEATURES
 2. Deal with unzip file exists
 '''
 
+import settings
 import os
 import shutil
 import pandas as pd
 import numpy as np
 from subprocess import call
-
-PRONTO_FILES = ["2015_station_data.csv", "2015_status_data.csv",
-                "2015_trip_data.csv", "2015_weather_data.csv",
-                "README.txt", "open_data_year_one.zip"]
-PARENT_PATH = os.path.abspath("..")
-DATA_DIR = os.path.join(PARENT_PATH, "Data")
 
 class StackDir(object):
 
@@ -38,13 +33,13 @@ class StackDir(object):
     os.chdir(new_directory)
 
 
-def getProntoFiles(file_name="open_data_year_one",
+def getDataFile(
     url="https://s3.amazonaws.com/pronto-data/open_data_year_one.zip"
     ):
-  # Makes sure that the data are downloaded into Data/
+  # Acquires the data from the URL
+  zip_file = os.path.split(url)[-1]
   stack_dir = StackDir()
-  stack_dir.push(DATA_DIR)
-  zip_file = "%s.zip" % file_name
+  stack_dir.push(settings.DATA_DIR)
   if not os.path.exists(zip_file):
     call(["curl", 
         "-O", 
@@ -54,19 +49,20 @@ def getProntoFiles(file_name="open_data_year_one",
   stack_dir.pop()
   return
 
-def deleteDataFiles(file_list = PRONTO_FILES):
+def deleteDataFiles(file_list = settings.PRONTO_FILES):
   # Deletes files from the data directory
   stack_dir = StackDir()
-  stack_dir.push(DATA_DIR)
+  stack_dir.push(settings.DATA_DIR)
   for item in file_list:
     os.remove(item)
   stack_dir.pop()
 
-def getTripData():
+def getTripsData():
   # Returns a pandas dataframe with the trip data
-  getProntoFiles()
-  TRIP_FILE = "2015_trip_data.csv"
-  abs_path = os.path.join(PARENT_PATH, "Data/%s" % TRIP_FILE)
+  getDataFile()
+  abs_path = os.path.join(settings.PARENT_PATH, "Data/%s" % 
+      settings.TRIP_FILE)
   result = pd.read_csv(abs_path,
       parse_dates=['starttime', 'stoptime'],
       infer_datetime_format=True)
+  return result

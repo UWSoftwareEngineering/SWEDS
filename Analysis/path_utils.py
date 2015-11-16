@@ -1,7 +1,8 @@
 ''' Utilities used to establish code paths. '''
 
-def setCodePath():
-  # Puts ../Code into PYTHONPATH
-  pass
+import os
+import sys
 
-setCodePath()
+parent_path = os.path.abspath("..")
+code_dir = os.path.join(parent_path, "Code")
+sys.path.append(code_dir)
