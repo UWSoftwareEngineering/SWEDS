@@ -65,4 +65,7 @@ def getTripsData():
   result = pd.read_csv(abs_path,
       parse_dates=['starttime', 'stoptime'],
       infer_datetime_format=True)
+  ind = pd.DatetimeIndex(result.starttime)
+  result['date'] = ind.date.astype('datetime64')
+  result['hour'] = ind.hour
   return result
