@@ -8,3 +8,5 @@
 #  seaborn
 # The script verifies that python is already installed
 # If not, you should either python 2.7 or 3.x.
+cd Unittest
+ln -s ../Code code
