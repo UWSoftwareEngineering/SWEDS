@@ -1,0 +1,2 @@
+INSTALL
+ Use install.sh to get atom, conda, conda packages
